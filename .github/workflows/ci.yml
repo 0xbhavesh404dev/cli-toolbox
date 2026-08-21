@@ -17,4 +17,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Run tests
-        run: python -m unittest discover -v
+        run: |
+          python -m unittest discover -v
+          code=$?
+          # exit code 5 means "no tests found" - fine for scaffolding PRs
+          if [ "$code" -eq 5 ]; then
+            echo "No tests discovered yet, nothing to run."
+            exit 0
+          fi
+          exit "$code"
